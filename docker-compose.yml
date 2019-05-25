@@ -1,0 +1,22 @@
+version: "3.7"
+
+services:
+  localtunnel_server:
+    image: defunctzombie/localtunnel-server:latest
+    env_file: .env
+    command: --secure true --domain $DOMAIN --port 3000
+    network_mode: host
+    container_name: localtunnel_server 
+
+  localtunnel_nginx:
+    depends_on:
+      - localtunnel_server
+    build: ./nginx_context
+    env_file: .env
+    network_mode: host
+    volumes:
+      - /home/ubuntu/localtunnel/ssl:/etc/nginx/ssl/
+    ports: 
+      - 443:443
+      - 80:80
+    container_name: localtunnel_nginx
